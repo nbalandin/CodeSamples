@@ -1,0 +1,87 @@
+﻿@using Internationalization.Reporting
+<div id="pro-reports" style="height: 100%; overflow: hidden;" pro-bound-element="scope.controllerElement">
+
+    <div class="pro-reports-list">
+        <ul class="pro-menu-horizontal pro-menu">
+            <li>
+                <a ng-click="scope.showExportWindow()" class="pro-export">@Resources.Get("Page.Reports.Export")</a>
+            </li>
+            <li ng-show="scope.AvailableOperations.CanDelete" ng-disabled="((scope.selectedItems.length < 1) || (scope.editState == true))">
+                <a class="pro-delete" ng-click="((scope.selectedItems.length < 1) || (scope.editState == true)) || scope.deleteReport()">@Resources.Get("Page.Reports.Delete")</a>
+            </li>
+            <li ng-show="scope.AvailableOperations.CanEditDefinition" ng-disabled="scope.isActionDisabled()">
+                <a class="pro-edit" ng-click="scope.isActionDisabled() || scope.editReportDef()">@Resources.Get("Page.Reports.EditDefinition")</a>
+            </li>
+            <li ng-show="scope.AvailableOperations.CanEditDescription" ng-disabled="scope.isActionDisabled()">
+                <a class="pro-edit-light" ng-click="scope.isActionDisabled() || scope.editDescription()">@Resources.Get("Page.Reports.EditDescription")</a>
+            </li>
+            <li ng-disable="(scope.editState == true)">
+                <a ng-click="scope.isFilterPanelVisible = !scope.isFilterPanelVisible"
+                   ng-class="{'active' : scope.isFilterPanelVisible, 'applied' : scope.isFilterApplied}"
+                   class="pro-filter">
+                    @Resources.Get("Page.Reports.Filter") <span class="caret"></span>
+                </a>
+            </li>
+        </ul>
+        <pro-filter-panel default-value="0"
+                          filters="scope.filters"
+                          fields="scope.fields"
+                          applied-filter="scope.extraFilter"
+                          is-visible="scope.isFilterPanelVisible"
+                          on-height-changed="scope.updateGridSize(filterHeight)"
+                          pro-bound-element="scope.filterPanelElement">
+        </pro-filter-panel>
+        <div class="pro-padding5"></div>
+
+        <pro-load-spinner events="GetReports">
+            <pro-grid style="overflow: hidden;"
+                      data-service="scope.dataService"
+                      data-service-method="'GetReports'"
+                      use-filters="true"
+                      selected-items="scope.selectedItems"
+                      extra-filter="scope.extraFilter"
+                      custom-options="scope.gridOptions"
+                      column-defs="scope.Cols"
+                      pro-bound-element="scope.gridElement"
+                      data-refresh="scope.forceGridRefresh"
+                      on-data-loaded="scope.gridOnDataLoaded()">
+            </pro-grid>
+        </pro-load-spinner>
+    </div>
+
+
+    <div ng-show="scope.editState == true" class="pro-reports-edit-definition">
+        <table>
+            <tr>
+                <td class="pro-padding-top">
+                    <div>
+                        <ul class="pro-menu-horizontal pro-menu" style="position: relative">
+                            <li>
+                                <a class="pro-save-as" ng-click="scope.saveAs()">@Resources.Get("Page.Reports.SaveAsNewReport")</a>
+                            </li>
+                            <li>
+                                <a class="pro-save" ng-click="scope.save()">@Resources.Get("Page.Reports.SaveAsCurrentReport")</a>
+                            </li>
+                            <li>
+                                <a class="pro-cancel" ng-click="scope.cancelEdit()">@Resources.Get("Page.Reports.CancelEdit")</a>
+                            </li>
+                            <li class="pro-reports-edit-definition-label">
+                                <span class="pro-label">{{scope.ReportDefinition.Name}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+@*                <td class="pro-reports-edit-definition-label">*@
+@*                    <span class="pro-label">{{scope.ReportDefinition.Name}}</span>*@
+@*                </td>*@
+            </tr>
+            <tr>
+                <td class="form-control-container" colspan="2">
+                    <textarea class="form-control textarea" ng-model="scope.ReportDefinition.Rdl"></textarea>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>

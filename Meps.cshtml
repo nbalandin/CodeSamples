@@ -1,0 +1,59 @@
+@using Prospector.CC.Internationalization
+<div id="pro-meps" style="height: 100%; overflow: hidden;" pro-bound-element="scope.controllerElement">
+    <ul class="pro-menu-horizontal pro-menu">
+        <li>
+            <a class="pro-settings" ng-click="scope.proGridAPI.toggleShowMenu()">@Resources.Get("Meps.Settings")</a>
+        </li>
+        <li ng-show="!scope.sendFileParameters && scope.MepAvailableOperations.CanExport">
+            <a ng-click="scope.showExportWindow()" class="pro-export">@Resources.Get("Meps.Export")</a>
+        </li>
+        <li disabled ng-show="!scope.sendFileParameters">
+            <a class="pro-import">@Resources.Get("Meps.Import")</a>
+        </li>
+        <li ng-show="!scope.sendFileParameters && scope.MepAvailableOperations.CanSendFiles" ng-disabled="scope.selectedItems.length < 1">
+            <a class="pro-send" ng-click="(scope.selectedItems.length < 1) || scope.doDownloadFile()">@Resources.Get("Meps.SendFile(s)")</a>
+        </li>
+        <li ng-show="scope.sendFileParameters && scope.MepAvailableOperations.CanSendFiles" ng-disabled="scope.selectedItems.length < 1">
+            <a class="pro-send" ng-click="(scope.selectedItems.length < 1) || scope.doSendSelected()">@Resources.Get("Meps.SendFile(s)")</a>
+        </li>
+        <li style="float: right;">
+            <a href
+               ng-click="scope.isFilterPanelVisible = !scope.isFilterPanelVisible"
+               ng-class="{'active' : scope.isFilterPanelVisible, 'applied' : scope.isFilterApplied}"
+               class="pro-filter"><span class="caret"></span>
+            </a>
+        </li>
+
+    </ul>
+    <pro-filter-panel default-value="0"
+                      filter-type="scope.filterType"
+                      filters="scope.filters"
+                      fields="scope.fields"
+                      applied-filter="scope.extraFilter"
+                      is-visible="scope.isFilterPanelVisible"
+                      on-height-changed="scope.updateGridSize(filterHeight)"
+                      pro-bound-element="scope.filterPanelElement">
+    </pro-filter-panel>
+    <div class="pro-padding5"></div>
+    <pro-load-spinner events="CC.MepGridBusy,SearchMeps">
+        <pro-grid style="height: 100%; overflow: hidden;"
+                  data-service="scope.dataService"
+                  data-service-method="'SearchMeps'"
+                  use-filters="true"
+                  extra-filter="scope.extraFilter"
+                  custom-options="scope.gridOptions"
+                  column-defs="scope.Cols"
+                  on-data-loaded="scope.updateGridSize"
+                  on-row-double-click="scope.showEditMEPWindow"
+                  selected-items="scope.selectedItems"
+                  pro-bound-element="scope.gridElement"
+                  context-menu="scope.contextMenu"
+                  pre-filter="scope.preFilter"
+                  on-new-poll-data="scope.onNewPollData()"
+                  api="scope.proGridAPI"
+                  data-refresh="scope.forceGridRefresh"
+                  caption="{{scope.gridCaption}}"
+                  grid-id="CC.Meps">
+        </pro-grid>
+    </pro-load-spinner>
+</div>
